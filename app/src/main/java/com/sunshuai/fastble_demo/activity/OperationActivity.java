@@ -51,6 +51,36 @@ public class OperationActivity extends AppCompatActivity implements Observer {
         characteristic = bluetoothGattService.getCharacteristics().get(0);
     }
 
+    private void send(byte[] bytes) {
+        BleManager.getInstance().write(
+                bleDevice,
+                characteristic.getService().getUuid().toString(),
+                characteristic.getUuid().toString(),
+                bytes,
+                new BleWriteCallback() {
+
+                    @Override
+                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Logger.i("onWriteSuccess");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onWriteFailure(final BleException exception) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Logger.i("onWriteFailure");
+                            }
+                        });
+                    }
+                });
+    }
+
     private void send(String hex) {
         BleManager.getInstance().write(
                 bleDevice,
